@@ -28,12 +28,34 @@ import cn.com.vortexa.common.dto.PageResult;
 )
 public class AroNetworkBot extends AbstractVortexaBot {
     public static final String GROUP_DEPIN = "Depin";
+    public static final String GROUP_QUERY = "Query";
 
     private final AroNetworkApi aroNetworkApi;
 
     public AroNetworkBot(VortexaBotContext vortexaBotContext) {
         super(vortexaBotContext);
         this.aroNetworkApi = new AroNetworkApiImpl(this);
+    }
+
+    @VortexaBotAPI(
+            name = "Point query",
+            catalogueName = GROUP_DEPIN,
+            catalogueOrder = 1,
+            schedulerType = VortexaBotApiSchedulerType.NONE
+    )
+    public void pointQuery() {
+        forEachAccountContext(new FullAccountContextScanner() {
+            @Override
+            public void scan(PageResult<AccountContext> pageResult, int i, FullAccountContext fullAccountContext) throws Exception {
+
+            }
+
+            @Override
+            public Object scanWithResult(PageResult<AccountContext> page, int batchIdx, FullAccountContext fullAccountContext) throws Exception {
+                AppendLogger logger = getBotMethodInvokeContext().getLogger();
+                return aroNetworkApi.pointQuery(fullAccountContext, logger);
+            }
+        });
     }
 
     @VortexaBotAPI(
